@@ -1,0 +1,351 @@
+{
+  "$defs": {
+    "Column": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "source_name": {
+          "title": "Source Name",
+          "type": "string"
+        },
+        "dtype": {
+          "enum": [
+            "integer",
+            "number",
+            "text",
+            "date"
+          ],
+          "title": "Dtype",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "null_count": {
+          "default": 0,
+          "title": "Null Count",
+          "type": "integer"
+        },
+        "distinct_count": {
+          "default": 0,
+          "title": "Distinct Count",
+          "type": "integer"
+        },
+        "candidate_key": {
+          "default": false,
+          "title": "Candidate Key",
+          "type": "boolean"
+        },
+        "sensitive": {
+          "default": false,
+          "title": "Sensitive",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "source_name",
+        "dtype"
+      ],
+      "title": "Column",
+      "type": "object"
+    },
+    "Filter": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Column",
+          "type": "string"
+        },
+        "op": {
+          "enum": [
+            "eq",
+            "ne",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "is_null",
+            "not_null"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "column",
+        "op"
+      ],
+      "title": "Filter",
+      "type": "object"
+    },
+    "Metric": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "aggregation": {
+          "enum": [
+            "sum",
+            "avg",
+            "count",
+            "count_distinct",
+            "min",
+            "max"
+          ],
+          "title": "Aggregation",
+          "type": "string"
+        },
+        "expression": {
+          "default": "*",
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Expression",
+          "type": "string"
+        },
+        "unit": {
+          "default": "unspecified",
+          "maxLength": 100,
+          "title": "Unit",
+          "type": "string"
+        },
+        "filters": {
+          "items": {
+            "$ref": "#/$defs/Filter"
+          },
+          "maxItems": 20,
+          "title": "Filters",
+          "type": "array"
+        },
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "aggregation"
+      ],
+      "title": "Metric",
+      "type": "object"
+    },
+    "Relationship": {
+      "additionalProperties": false,
+      "properties": {
+        "left_view": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Left View",
+          "type": "string"
+        },
+        "left_key": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Left Key",
+          "type": "string"
+        },
+        "right_view": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Right View",
+          "type": "string"
+        },
+        "right_key": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Right Key",
+          "type": "string"
+        },
+        "cardinality": {
+          "enum": [
+            "one_to_one",
+            "one_to_many",
+            "many_to_one",
+            "many_to_many"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 5,
+          "title": "Description",
+          "type": "string"
+        },
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "left_view",
+        "left_key",
+        "right_view",
+        "right_key",
+        "cardinality",
+        "description"
+      ],
+      "title": "Relationship",
+      "type": "object"
+    },
+    "View": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "dataset_id": {
+          "title": "Dataset Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "grain": {
+          "default": "Unconfirmed: one uploaded row. Confirm its business meaning.",
+          "title": "Grain",
+          "type": "string"
+        },
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/Column"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "metrics": {
+          "items": {
+            "$ref": "#/$defs/Metric"
+          },
+          "title": "Metrics",
+          "type": "array"
+        },
+        "filters": {
+          "items": {
+            "$ref": "#/$defs/Filter"
+          },
+          "maxItems": 20,
+          "title": "Filters",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "dataset_id",
+        "name",
+        "columns",
+        "metrics"
+      ],
+      "title": "View",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "views": {
+      "items": {
+        "$ref": "#/$defs/View"
+      },
+      "maxItems": 12,
+      "title": "Views",
+      "type": "array"
+    },
+    "selected_views": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9_]{0,62}$",
+        "type": "string"
+      },
+      "maxItems": 12,
+      "title": "Selected Views",
+      "type": "array"
+    },
+    "relationships": {
+      "items": {
+        "$ref": "#/$defs/Relationship"
+      },
+      "maxItems": 66,
+      "title": "Relationships",
+      "type": "array"
+    },
+    "fiscal_year_start_month": {
+      "default": 1,
+      "maximum": 12,
+      "minimum": 1,
+      "title": "Fiscal Year Start Month",
+      "type": "integer"
+    }
+  },
+  "title": "SemanticModel",
+  "type": "object"
+}

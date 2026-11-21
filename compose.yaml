@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      COE_PROVIDER: ${COE_PROVIDER:-demo}
+      COE_API_TOKEN: ${COE_API_TOKEN:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-}
+    volumes:
+      - coe-data:/data
+    restart: unless-stopped
+volumes:
+  coe-data:

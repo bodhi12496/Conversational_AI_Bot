@@ -1,0 +1,131 @@
+{
+  "$defs": {
+    "Filter": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Column",
+          "type": "string"
+        },
+        "op": {
+          "enum": [
+            "eq",
+            "ne",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "is_null",
+            "not_null"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "column",
+        "op"
+      ],
+      "title": "Filter",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "metrics": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 8,
+      "title": "Metrics",
+      "type": "array"
+    },
+    "group_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Group By"
+    },
+    "filters": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/Filter"
+        },
+        "type": "array"
+      },
+      "title": "Filters",
+      "type": "object"
+    },
+    "limit": {
+      "default": 100,
+      "maximum": 500,
+      "minimum": 1,
+      "title": "Limit",
+      "type": "integer"
+    },
+    "clarification": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Clarification"
+    }
+  },
+  "title": "QueryPlan",
+  "type": "object"
+}

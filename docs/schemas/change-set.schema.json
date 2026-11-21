@@ -1,0 +1,445 @@
+{
+  "$defs": {
+    "DescribeColumn": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "describe_column",
+          "title": "Op",
+          "type": "string"
+        },
+        "view_id": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "View Id",
+          "type": "string"
+        },
+        "column": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Column",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op",
+        "view_id",
+        "column",
+        "description"
+      ],
+      "title": "DescribeColumn",
+      "type": "object"
+    },
+    "Filter": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Column",
+          "type": "string"
+        },
+        "op": {
+          "enum": [
+            "eq",
+            "ne",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "is_null",
+            "not_null"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "column",
+        "op"
+      ],
+      "title": "Filter",
+      "type": "object"
+    },
+    "Metric": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "aggregation": {
+          "enum": [
+            "sum",
+            "avg",
+            "count",
+            "count_distinct",
+            "min",
+            "max"
+          ],
+          "title": "Aggregation",
+          "type": "string"
+        },
+        "expression": {
+          "default": "*",
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Expression",
+          "type": "string"
+        },
+        "unit": {
+          "default": "unspecified",
+          "maxLength": 100,
+          "title": "Unit",
+          "type": "string"
+        },
+        "filters": {
+          "items": {
+            "$ref": "#/$defs/Filter"
+          },
+          "maxItems": 20,
+          "title": "Filters",
+          "type": "array"
+        },
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "aggregation"
+      ],
+      "title": "Metric",
+      "type": "object"
+    },
+    "Relationship": {
+      "additionalProperties": false,
+      "properties": {
+        "left_view": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Left View",
+          "type": "string"
+        },
+        "left_key": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Left Key",
+          "type": "string"
+        },
+        "right_view": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Right View",
+          "type": "string"
+        },
+        "right_key": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "Right Key",
+          "type": "string"
+        },
+        "cardinality": {
+          "enum": [
+            "one_to_one",
+            "one_to_many",
+            "many_to_one",
+            "many_to_many"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 5,
+          "title": "Description",
+          "type": "string"
+        },
+        "confirmed": {
+          "default": false,
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "left_view",
+        "left_key",
+        "right_view",
+        "right_key",
+        "cardinality",
+        "description"
+      ],
+      "title": "Relationship",
+      "type": "object"
+    },
+    "SelectViews": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "select_views",
+          "title": "Op",
+          "type": "string"
+        },
+        "view_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_]{0,62}$",
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "View Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "op",
+        "view_ids"
+      ],
+      "title": "SelectViews",
+      "type": "object"
+    },
+    "SetFilters": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "set_view_filters",
+          "title": "Op",
+          "type": "string"
+        },
+        "view_id": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "View Id",
+          "type": "string"
+        },
+        "filters": {
+          "items": {
+            "$ref": "#/$defs/Filter"
+          },
+          "maxItems": 20,
+          "title": "Filters",
+          "type": "array"
+        }
+      },
+      "required": [
+        "op",
+        "view_id",
+        "filters"
+      ],
+      "title": "SetFilters",
+      "type": "object"
+    },
+    "SetFiscalYear": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "set_fiscal_year",
+          "title": "Op",
+          "type": "string"
+        },
+        "month": {
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Month",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "op",
+        "month"
+      ],
+      "title": "SetFiscalYear",
+      "type": "object"
+    },
+    "SetGrain": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "set_grain",
+          "title": "Op",
+          "type": "string"
+        },
+        "view_id": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "View Id",
+          "type": "string"
+        },
+        "grain": {
+          "maxLength": 1000,
+          "minLength": 5,
+          "title": "Grain",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op",
+        "view_id",
+        "grain"
+      ],
+      "title": "SetGrain",
+      "type": "object"
+    },
+    "SetRelationship": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "set_relationship",
+          "title": "Op",
+          "type": "string"
+        },
+        "relationship": {
+          "$ref": "#/$defs/Relationship"
+        }
+      },
+      "required": [
+        "op",
+        "relationship"
+      ],
+      "title": "SetRelationship",
+      "type": "object"
+    },
+    "UpsertMetric": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "upsert_metric",
+          "title": "Op",
+          "type": "string"
+        },
+        "view_id": {
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "title": "View Id",
+          "type": "string"
+        },
+        "metric": {
+          "$ref": "#/$defs/Metric"
+        }
+      },
+      "required": [
+        "op",
+        "view_id",
+        "metric"
+      ],
+      "title": "UpsertMetric",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "summary": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Summary",
+      "type": "string"
+    },
+    "clarification": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Clarification"
+    },
+    "operations": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "describe_column": "#/$defs/DescribeColumn",
+            "select_views": "#/$defs/SelectViews",
+            "set_fiscal_year": "#/$defs/SetFiscalYear",
+            "set_grain": "#/$defs/SetGrain",
+            "set_relationship": "#/$defs/SetRelationship",
+            "set_view_filters": "#/$defs/SetFilters",
+            "upsert_metric": "#/$defs/UpsertMetric"
+          },
+          "propertyName": "op"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/DescribeColumn"
+          },
+          {
+            "$ref": "#/$defs/SetGrain"
+          },
+          {
+            "$ref": "#/$defs/UpsertMetric"
+          },
+          {
+            "$ref": "#/$defs/SetFilters"
+          },
+          {
+            "$ref": "#/$defs/SetRelationship"
+          },
+          {
+            "$ref": "#/$defs/SelectViews"
+          },
+          {
+            "$ref": "#/$defs/SetFiscalYear"
+          }
+        ]
+      },
+      "maxItems": 20,
+      "title": "Operations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "summary"
+  ],
+  "title": "ChangeSet",
+  "type": "object"
+}
